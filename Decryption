@@ -57,7 +57,6 @@ end
 [sorty1,indexy3]=sort(sy);
 % this code for decrypt the r value
 p=1;q=1;
-16
 for i=1:256
  for j=1:256
  if(mod(j,2)==0)
@@ -112,7 +111,6 @@ for row=256:-1:1
  eb(row,col)=eb(indexx3(ii),indexy3(jj));
  eb(indexx3(ii),indexy3(jj))=temp;
  jj=jj-1;
-17
  end
 end
 
@@ -159,7 +157,6 @@ display(chor);
 %figure,plot(x,y,'b*');
 %correlation coefficient of vertical pixels of plain image
 x = A(1:100-1,:,1);
-18
 y = A(2:100,:,1);
 pvcor=corr2(x,y);
 %display('vertical pixel analysis for plain image');
