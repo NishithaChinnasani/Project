@@ -1,0 +1,205 @@
+close all;
+clear all;
+load('yashproject','cimage2');
+mu1=10.13;
+mu2=12.94;
+%bin = native2unicode(mu2);
+figure(1),imshow(cimage2);
+%display(bin);
+15
+gamma1=0.17;
+gamma2=0.14;
+X(1)=0.17;
+Y(1)=0.40;
+for i=2:33000
+
+ X(i) = (mu1*cos((X(i-1)*(1-X(i-1)))))+(gamma1*sin((Y(i-1)*Y(i1))));
+ Y(i)=(mu2*cos((Y(i-1)*(1-Y(i-1)))))+(gamma2*sin(((X(i-1)*X(i1)))+(X(i-1)*Y(i-1))));
+end
+%figure,plot(X,Y);
+
+key1=zeros(256,256,'uint8');
+key2=zeros(256,256,'uint8');
+key3=zeros(256,256,'uint8');
+r = cimage2(:,:,1);
+g = cimage2(:,:,2);
+b = cimage2(:,:,3);
+% r(100:120,100:120)=0;
+% g(100:120,100:120)=0;
+% b(100:120,100:120)=0;
+[m,n]=size(r);
+figure(2),imshow(r);
+figure(3),imshow(g);
+figure(4),imshow(b);
+% figure,imhist(r);
+for i=1:m
+ sx(i)=X(i);
+ sy(i)=Y(i);
+end
+[sortx1,indexx1]=sort(sx);
+[sorty1,indexy1]=sort(sy);
+j=1;
+for i=m:m+255
+ sx(j)=X(i);
+ sy(j)=Y(i);
+ j=j+1;
+end
+[sortx1,indexx2]=sort(sx);
+[sorty1,indexy2]=sort(sy);
+kj=m+256;
+j=1;
+for i=kj:kj+255
+ sx(j)=X(i);
+ sy(j)=Y(i);
+ j=j+1;
+end
+[sortx1,indexx3]=sort(sx);
+[sorty1,indexy3]=sort(sy);
+% this code for decrypt the r value
+p=1;q=1;
+16
+for i=1:256
+ for j=1:256
+ if(mod(j,2)==0)
+ key1(i,j)=fix(mod((X(p)*1000),250));p=p+1;
+ else
+ key1(i,j)=fix(mod((Y(p)*1000),250)); q=q+1;
+ end
+ end
+end
+
+key2= circshift(key1, [17,14]);
+key3=circshift(key2, [10,12]);
+
+er=bitxor(r,key1,'uint8');
+eg=bitxor(g,key2,'uint8');
+eb=bitxor(b,key3,'uint8');
+
+
+% this is for r decryption
+ii=257;
+for row=256:-1:1
+ ii=ii-1;
+ jj=256;
+ for col=256:-1:1
+ temp=er(row,col);
+ er(row,col)=er(indexx1(ii),indexy1(jj));
+ er(indexx1(ii),indexy1(jj))=temp;
+ jj=jj-1;
+ end
+end
+figure(5),imshow(er);
+% this is for g decryption
+ii=257;
+for row=256:-1:1
+ ii=ii-1;
+ jj=256;
+ for col=256:-1:1
+ temp=eg(row,col);
+ eg(row,col)=eg(indexx2(ii),indexy2(jj));
+ eg(indexx2(ii),indexy2(jj))=temp;
+ jj=jj-1;
+ end
+end
+figure(6),imshow(eg);
+%this is for b decryption
+ii=257;
+for row=256:-1:1
+ ii=ii-1;
+ jj=256;
+ for col=256:-1:1
+ temp=eb(row,col);
+ eb(row,col)=eb(indexx3(ii),indexy3(jj));
+ eb(indexx3(ii),indexy3(jj))=temp;
+ jj=jj-1;
+17
+ end
+end
+
+figure(7),imshow(eb);
+cimage2=cat(3,er,eg,eb);
+figure(8),imshow(cimage2);
+3.3 Correlation:
+close all;
+clear all;
+%correlation coefficient
+load('yashproject','cimage2');
+%im=imread('lenna1.jpg');
+im=imread('peppers.jpg');
+im1=imresize(im,[256 256]);
+rmatrix=im1;
+
+r = rmatrix(:,:,1);
+g = rmatrix(:,:,2);
+b = rmatrix(:,:,3);
+cr = cimage2(:,:,1);
+cg = cimage2(:,:,2);
+cb = cimage2(:,:,3);
+A=r;
+J=cr;
+%display(entropy(J));
+%display(corr2(A,J));
+%figure(1),imshow(I);
+%figure(2),imshow(J);
+%correlation coefficient of horizontal pixels
+x = A(:,1:100-1,1);
+y = A(:,2:100,1);
+
+hor=corr2(x,y);
+figure,plot(x,y,'b.','markersize',1);
+display('horizontal pixel analysis for plain image');
+display(hor);
+x = J(:,1:100-1,1);
+y = J(:,2:100,1);
+
+chor=corr2(x,y);
+figure,plot(x,y,'b.','markersize',1);
+display('horizontal pixel analysis for ciphered image');
+display(chor);
+%figure,plot(x,y,'b*');
+%correlation coefficient of vertical pixels of plain image
+x = A(1:100-1,:,1);
+18
+y = A(2:100,:,1);
+pvcor=corr2(x,y);
+%display('vertical pixel analysis for plain image');
+display(pvcor);
+%figure,plot(x,y,'r.','markersize',1);
+%figure,plot(x,y,'color',[0 0.5 0],'linestyle','.');
+x = J(1:100-1,:,1);
+y = J(2:100,:,1);
+cvcor=corr2(x,y);
+vx=x;vy=y;
+display('vertical pixel analysis for ciphered image');
+%sprintf('%f',cvcor);
+display(cvcor);
+%figure,plot(x,y,'k.','markersize',1);
+%correlation coefficient of diagonal pixels of plain image
+x = A(1:100-1,1:100-1,1);
+y = A(2:100,2:100,1);
+pdcor=corr2(x,y);
+%display('diagonal pixel analysis for plain image');
+display(pdcor);
+%figure,plot(x,y,'k.','markersize',1);
+x = J(1:100-1,1:100-1,1);
+y = J(2:100,2:100,1);
+cdcor=corr2(x,y);
+display('diagonal pixel analysis for ciphered image');
+display(cdcor);
+dx=x;dy=y;
+figure,plot(x,y,'k.','markersize',1);
+% plot(x,y,'b.','markersize',2);
+% title('Diagonal direction');
+% xlabel('pixel value on (x,y)');
+% ylabel('pixel value on (x+1,y+1)');
+z=zeros(99,256,'uint8');
+vz=ones(255,256,'uint8');
+dz=zeros(255,255,'uint8');
+dz(1:255,1:255)=2;
+%correlation coefficient of horizontal pixels
+%z=zeros(255,255,'uint8');
+%scatter3(x,z,y,'r.');
+%hold on
+%scatter3(vx,vz,vy,'b.');
+%scatter3(dx,dz,dy,'g.');
+%hold off
