@@ -11,7 +11,6 @@ im=imread('peppers.jpg');
 im1=imresize(im,[256 256]);
 rmatrix=im1;
 r = im1(:,:,1);
-20
 g = im1(:,:,2);
 b = im1(:,:,3);
 img_a=g;
