@@ -1,0 +1,30 @@
+% Load the image and the CIELAB color space image
+load('yashproject','cimage2');
+im = imread('peppers.jpg');
+im1 = imresize(im,[256 256]);
+rmatrix = im1;
+%Extract RGB channels
+r = rmatrix(:,:,1);
+g = rmatrix(:,:,2);
+b = rmatrix(:,:,3);
+%Extract CIELAB channels
+cr = cimage2(:,:,1);
+cg = cimage2(:,:,2);
+cb = cimage2(:,:,3);
+% Define the entropy function
+function result = calculate_entropy(input_image)
+% Calculate the probability distribution of pixel values
+[counts, ~] = histc(input_image(:), 0:255);
+probabilities = counts / numel(input_image);
+% Calculate the entropy
+result = -sum(probabilities .* log2(probabilities));
+end
+% Calculate and display the entropy of each channel
+%disp('Entropy of RGB channels:');
+%disp(['R: ', num2str(calculate_entropy(r))]);
+%disp(['G: ', num2str(calculate_entropy(g))]);
+%disp(['B: ', num2str(calculate_entropy(b))]);
+disp('Entropy of CIELAB channels:');
+disp(['Cr: ', num2str(calculate_entropy(cr))]);
+disp(['Cg: ', num2str(calculate_entropy(cg))]);
+disp(['Cb: ', num2str(calculate_entropy(cb))]);
