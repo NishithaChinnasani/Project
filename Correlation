@@ -1,0 +1,83 @@
+close all;
+clear all;
+%correlation coefficient
+load('yashproject','cimage2');
+%im=imread('lenna1.jpg');
+im=imread('peppers.jpg');
+im1=imresize(im,[256 256]);
+rmatrix=im1;
+
+r = rmatrix(:,:,1);
+g = rmatrix(:,:,2);
+b = rmatrix(:,:,3);
+cr = cimage2(:,:,1);
+cg = cimage2(:,:,2);
+cb = cimage2(:,:,3);
+A=r;
+J=cr;
+%display(entropy(J));
+%display(corr2(A,J));
+%figure(1),imshow(I);
+%figure(2),imshow(J);
+%correlation coefficient of horizontal pixels
+x = A(:,1:100-1,1);
+y = A(:,2:100,1);
+
+hor=corr2(x,y);
+figure,plot(x,y,'b.','markersize',1);
+display('horizontal pixel analysis for plain image');
+display(hor);
+x = J(:,1:100-1,1);
+y = J(:,2:100,1);
+
+chor=corr2(x,y);
+figure,plot(x,y,'b.','markersize',1);
+display('horizontal pixel analysis for ciphered image');
+display(chor);
+%figure,plot(x,y,'b*');
+%correlation coefficient of vertical pixels of plain image
+x = A(1:100-1,:,1);
+18
+y = A(2:100,:,1);
+pvcor=corr2(x,y);
+%display('vertical pixel analysis for plain image');
+display(pvcor);
+%figure,plot(x,y,'r.','markersize',1);
+%figure,plot(x,y,'color',[0 0.5 0],'linestyle','.');
+x = J(1:100-1,:,1);
+y = J(2:100,:,1);
+cvcor=corr2(x,y);
+vx=x;vy=y;
+display('vertical pixel analysis for ciphered image');
+%sprintf('%f',cvcor);
+display(cvcor);
+%figure,plot(x,y,'k.','markersize',1);
+%correlation coefficient of diagonal pixels of plain image
+x = A(1:100-1,1:100-1,1);
+y = A(2:100,2:100,1);
+pdcor=corr2(x,y);
+%display('diagonal pixel analysis for plain image');
+display(pdcor);
+%figure,plot(x,y,'k.','markersize',1);
+x = J(1:100-1,1:100-1,1);
+y = J(2:100,2:100,1);
+cdcor=corr2(x,y);
+display('diagonal pixel analysis for ciphered image');
+display(cdcor);
+dx=x;dy=y;
+figure,plot(x,y,'k.','markersize',1);
+% plot(x,y,'b.','markersize',2);
+% title('Diagonal direction');
+% xlabel('pixel value on (x,y)');
+% ylabel('pixel value on (x+1,y+1)');
+z=zeros(99,256,'uint8');
+vz=ones(255,256,'uint8');
+dz=zeros(255,255,'uint8');
+dz(1:255,1:255)=2;
+%correlation coefficient of horizontal pixels
+%z=zeros(255,255,'uint8');
+%scatter3(x,z,y,'r.');
+%hold on
+%scatter3(vx,vz,vy,'b.');
+%scatter3(dx,dz,dy,'g.');
+%hold off
